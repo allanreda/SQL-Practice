@@ -1,8 +1,17 @@
 -- 1. Count the total number of records in the amazon_sales_report table.
+SELECT COUNT(*) 
+FROM public.amazon_sales_data
 
 -- 2. Find the total sales amount.
+SELECT SUM("Amount") 
+FROM public.amazon_sales_data
 
 -- 3. Retrieve the top 10 orders based on the sales amount.
+SELECT * 
+FROM public.amazon_sales_data 
+WHERE "Amount" IS NOT NULL
+ORDER BY "Amount" DESC
+LIMIT 10
 
 -- 4. Count the number of orders per fulfilment type.
 
