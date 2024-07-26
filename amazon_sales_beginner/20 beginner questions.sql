@@ -14,7 +14,7 @@ ORDER BY "Amount" DESC
 LIMIT 10
 
 -- 4. Count the number of orders per fulfilment type.
-SELECT "Fulfilment", COUNT(*) as fulfilment_type
+SELECT "Fulfilment", COUNT(*) AS fulfilment_type
 FROM public.amazon_sales_data
 GROUP BY "Fulfilment"
 
@@ -29,36 +29,36 @@ SELECT AVG("Amount")
 FROM public.amazon_sales_data
 
 -- 7. Count the number of orders for each product category.
-select "Category", count(*) as product_category
-from public.amazon_sales_data
-group by "Category"
+SELECT "Category", COUNT(*) AS product_category
+FROM public.amazon_sales_data
+GROUP BY "Category"
 
 -- 8. Identify the state with the most orders shipped.
-select "ship-state", count(*) as orders_shipped
-from public.amazon_sales_data
-where "Courier Status" = 'Shipped'
-group by "ship-state"
-order by count(*) desc
-limit 1
+SELECT "ship-state", COUNT(*) AS orders_shipped
+FROM public.amazon_sales_data
+WHERE "Courier Status" = 'Shipped'
+GROUP BY "ship-state"
+ORDER BY COUNT(*) DESC
+LIMIT 1
 
 -- 9. List all orders where the quantity ordered is greater than 10.
-select *
-from public.amazon_sales_data
-where "Qty" > 10
+SELECT *
+FROM public.amazon_sales_data
+WHERE "Qty" > 10
 
 -- 10. Find the total sales amount for each currency.
-select "currency", sum("Amount") as sales_amount
-from public.amazon_sales_data
-group by "currency"
+SELECT "currency", SUM("Amount") AS sales_amount
+FROM public.amazon_sales_data
+GROUP BY "currency"
 
 -- 11. Retrieve the first 5 records from the table.
-select *
-from public.amazon_sales_data
-limit 5
+SELECT *
+FROM public.amazon_sales_data
+LIMIT 5
 
 -- 12. Count the number of unique products sold.
-select count(distinct("SKU")) as unique_products
-from public.amazon_sales_data
+SELECT COUNT(DISTINCT "SKU") AS unique_products
+FROM public.amazon_sales_data
 
 -- 13. Find the order with the highest sales amount.
 SELECT * 
@@ -68,39 +68,36 @@ ORDER BY "Amount" DESC
 LIMIT 1
 
 -- 14. List all distinct sales channels.
-select distinct("Sales Channel") 
-FROM public.amazon_sales_data  
+SELECT DISTINCT "Sales Channel" 
+FROM public.amazon_sales_data
 
 -- 15. Count the number of orders with a status of 'Cancelled'.
-select count(*) as cancelled_orders
+SELECT COUNT(*) AS cancelled_orders
 FROM public.amazon_sales_data  
-where "Status" = 'Cancelled'
+WHERE "Status" = 'Cancelled'
 
 -- 16. Calculate the total number of products sold (sum of quantities).
-select sum("Qty") as total_products_sold
-FROM public.amazon_sales_data  
+SELECT SUM("Qty") AS total_products_sold
+FROM public.amazon_sales_data
 
 -- 17. Find the average quantity ordered per order.
-select avg("Qty") as average_quantity
+SELECT AVG("Qty") AS average_quantity
 FROM public.amazon_sales_data  
-where "Status" != 'Cancelled'
+WHERE "Status" != 'Cancelled'
 
 -- 18. List all orders with a sales amount greater than 500.
-select * 
+SELECT * 
 FROM public.amazon_sales_data  
-where "Amount" > 500
+WHERE "Amount" > 500
 
 -- 19. Retrieve the top 5 most frequently ordered products.
-select count(*), "SKU"
+SELECT COUNT(*), "SKU"
 FROM public.amazon_sales_data  
-group by "SKU"
-order by count desc
-limit 5
+GROUP BY "SKU"
+ORDER BY COUNT DESC
+LIMIT 5
 
 -- 20. Find the number of orders shipped by each fulfilment type.
-select count(*), "Fulfilment"
+SELECT COUNT(*), "Fulfilment"
 FROM public.amazon_sales_data  
-group by "Fulfilment"
-
-
-
+GROUP BY "Fulfilment"
