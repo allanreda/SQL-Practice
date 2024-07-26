@@ -14,8 +14,15 @@ ORDER BY "Amount" DESC
 LIMIT 10
 
 -- 4. Count the number of orders per fulfilment type.
+SELECT "Fulfilment", COUNT(*) as fulfilment_type
+FROM public.amazon_sales_data
+GROUP BY "Fulfilment"
 
 -- 5. List all orders that were shipped to 'BENGALURU'.
+SELECT *
+FROM public.amazon_sales_data
+WHERE "ship-city" = 'BENGALURU' 
+AND "Status" != 'Cancelled'
 
 -- 6. Calculate the average order amount.
 
