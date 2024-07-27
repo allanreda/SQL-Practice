@@ -133,8 +133,14 @@ order by "Amount" asc
 limit 1
 
 -- 26. List all orders where the status is 'Shipped' but the fulfilment is 'Merchant'.
+select *
+FROM public.amazon_sales_data  
+where "Status" = 'Shipped' and "Fulfilment" = 'Merchant'
 
 -- 27. Count the number of orders with the currency 'INR'.
+select count(*) as INR_orders
+FROM public.amazon_sales_data  
+where "currency" = 'INR'
 
 -- 28. Find the total sales amount for orders fulfilled by 'Easy Ship'.
 
