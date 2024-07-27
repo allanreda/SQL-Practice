@@ -103,34 +103,14 @@ FROM public.amazon_sales_data
 GROUP BY "Fulfilment"
 
 -- 21. List all orders that were shipped in 'MUMBAI'.
-select *
-FROM public.amazon_sales_data  
-where "ship-city" = 'MUMBAI'
 
 -- 22. Find the total sales amount for each state.
-select sum("Amount") as sales_amount, "ship-state"
-FROM public.amazon_sales_data  
-group by "ship-state"
-order by sales_amount desc
 
 -- 23. Count the number of orders for each size.
-select count(*) as orders, "Size"
-FROM public.amazon_sales_data  
-group by "Size"
-order by orders desc
 
 -- 24. Calculate the average sales amount per state.
-select avg("Amount") as sales_amount, "ship-state"
-FROM public.amazon_sales_data  
-group by "ship-state"
-order by sales_amount desc
 
 -- 25. Find the order with the lowest sales amount.
-select *, "Amount"
-FROM public.amazon_sales_data  
-where "Amount" >= 1
-order by "Amount" asc
-limit 1
 
 -- 26. List all orders where the status is 'Shipped' but the fulfilment is 'Merchant'.
 
