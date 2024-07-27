@@ -101,3 +101,64 @@ LIMIT 5
 SELECT COUNT(*), "Fulfilment"
 FROM public.amazon_sales_data  
 GROUP BY "Fulfilment"
+
+-- 21. List all orders that were shipped in 'MUMBAI'.
+
+-- 22. Find the total sales amount for each state.
+
+-- 23. Count the number of orders for each size.
+
+-- 24. Calculate the average sales amount per state.
+
+-- 25. Find the order with the lowest sales amount.
+
+-- 26. List all orders where the status is 'Shipped' but the fulfilment is 'Merchant'.
+
+-- 27. Count the number of orders with the currency 'INR'.
+
+-- 28. Find the total sales amount for orders fulfilled by 'Easy Ship'.
+
+-- 29. List all orders with a quantity of 1.
+
+-- 30. Count the number of orders for each courier status.
+
+-- 31. Calculate the average sales amount for each category.
+
+-- 32. Find the total sales amount for orders shipped to 'HYDERABAD'.
+
+-- 33. Count the number of orders with a specific ASIN.
+
+-- 34. List all orders that were cancelled.
+
+-- 35. Find the total quantity of products sold in 'TELANGANA'.
+
+-- 36. Count the number of distinct cities orders were shipped to.
+
+-- 37. Find the order with the earliest date.
+
+-- 38. List all orders where the promotion-ids are not null.
+
+-- 39. Count the number of orders shipped to each country.
+
+-- 40. Calculate the total sales amount for each promotion.
+
+-- 41. List all orders where the sales amount is between 500 and 1000.
+
+-- 42. Find the average sales amount for each courier status.
+
+-- 43. Count the number of orders with a specific SKU.
+
+-- 44. List all orders where the size is 'M'.
+
+-- 45. Find the total sales amount for each ship service level.
+
+-- 46. Count the number of orders with a specific fulfilment type.
+
+-- 47. List all orders with a sales channel of 'Amazon.in'.
+
+-- 48. Find the total sales amount for orders with a quantity greater than 1.
+
+-- 49. Calculate the average sales amount for each sales channel.
+
+-- 50. List all orders with a specific style.
+
