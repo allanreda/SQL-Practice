@@ -1,14 +1,65 @@
 -- 1. Calculate the total sales amount for each fulfilment type.
+select sum("Amount") as sales_amount, "Fulfilment"
+FROM public.amazon_sales_data  
+group by "Fulfilment"
+
 -- 2. Find the top 5 cities with the highest number of orders.
+select count(*), "ship-city"
+FROM public.amazon_sales_data  
+group by "ship-city"
+order by count(*) desc
+limit 5
+
 -- 3. Calculate the average quantity ordered for each product category.
+select avg("Qty") as avg_qty, "Category"
+FROM public.amazon_sales_data  
+where "Status" != 'Cancelled'
+group by "Category"
+
 -- 4. List all orders that were shipped using 'Expedited' service level.
+select *
+FROM public.amazon_sales_data  
+where "ship-service-level" = 'Expedited' and "Status" != 'Cancelled'
+
 -- 5. Count the number of orders that have a promotion applied.
+select count(*)
+FROM public.amazon_sales_data  
+where "promotion-ids" is not null
+
 -- 6. Find the total sales amount for each sales channel.
+select sum("Amount") as sales_amount, "Sales Channel"
+FROM public.amazon_sales_data  
+group by "Sales Channel"
+
 -- 7. Identify the ASIN with the highest total sales amount.
+select sum("Amount") as sales_amount, "ASIN"
+FROM public.amazon_sales_data  
+where "Amount" is not null
+group by "ASIN"
+order by sales_amount desc
+limit 1
+
 -- 8. Calculate the total quantity of products sold for each size.
+select sum("Qty") as sold_products, "Size"
+FROM public.amazon_sales_data  
+group by "Size"
+order by sold_products desc
+
 -- 9. List all orders where the 'Courier Status' is not 'Shipped'.
+select *
+FROM public.amazon_sales_data  
+where "Courier Status" != 'Shipped'
+
 -- 10. Find the average sales amount for orders shipped to each city.
+select avg("Amount") as avg_amount, "ship-city"
+FROM public.amazon_sales_data  
+where "Amount" is not null
+group by "ship-city"
+order by avg_amount desc
+
 -- 11. Calculate the total sales amount for each date.
+
+
 -- 12. Identify the month with the highest number of orders.
 -- 13. List all orders where the quantity ordered is less than 5.
 -- 14. Calculate the average order amount for each fulfilment type.
