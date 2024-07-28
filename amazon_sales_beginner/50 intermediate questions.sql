@@ -1,0 +1,50 @@
+-- 1. Calculate the total sales amount for each fulfilment type.
+-- 2. Find the top 5 cities with the highest number of orders.
+-- 3. Calculate the average quantity ordered for each product category.
+-- 4. List all orders that were shipped using 'Expedited' service level.
+-- 5. Count the number of orders that have a promotion applied.
+-- 6. Find the total sales amount for each sales channel.
+-- 7. Identify the ASIN with the highest total sales amount.
+-- 8. Calculate the total quantity of products sold for each size.
+-- 9. List all orders where the 'Courier Status' is not 'Shipped'.
+-- 10. Find the average sales amount for orders shipped to each city.
+-- 11. Calculate the total sales amount for each date.
+-- 12. Identify the month with the highest number of orders.
+-- 13. List all orders where the quantity ordered is less than 5.
+-- 14. Calculate the average order amount for each fulfilment type.
+-- 15. Find the top 3 states with the highest average sales amount per order.
+-- 16. Count the number of orders with a status of 'Cancelled' for each state.
+-- 17. Calculate the total sales amount for orders with a promotion applied.
+-- 18. Find the most frequently ordered size.
+-- 19. List all orders that were fulfilled by 'Merchant'.
+-- 20. Calculate the average sales amount for each 'ship-service-level'.
+-- 21. Identify the top 5 products with the highest quantity sold.
+-- 22. Calculate the total sales amount for each courier status.
+-- 23. Find the state with the highest number of 'Cancelled' orders.
+-- 24. List all orders where the promotion-ids contain more than one promotion.
+-- 25. Calculate the total quantity of products sold for each sales channel.
+-- 26. Identify the product category with the lowest average sales amount.
+-- 27. Find the total sales amount for orders shipped in the month of April.
+-- 28. Calculate the average order amount for orders with a quantity of 1.
+-- 29. List all orders where the 'Size' is not specified.
+-- 30. Find the total sales amount for each 'ship-country'.
+-- 31. Calculate the average quantity ordered for orders with a 'Shipped' status.
+-- 32. Identify the top 3 ASINs with the highest average sales amount.
+-- 33. Count the number of orders for each 'ship-service-level'.
+-- 34. Calculate the total sales amount for each 'ship-city' in 'MAHARASHTRA'.
+-- 35. Find the total quantity of products sold for each 'fulfilled-by' type.
+-- 36. List all orders where the 'Sales Channel' is 'Amazon.in' and the 'Status' is 'Cancelled'.
+-- 37. Calculate the average sales amount for each 'promotion-id'.
+-- 38. Identify the state with the highest average quantity ordered per order.
+-- 39. Find the total sales amount for orders shipped to each postal code.
+-- 40. Calculate the total sales amount for orders with a sales amount greater than 1000.
+-- 41. List all orders where the 'Style' is not null.
+-- 42. Count the number of orders shipped to 'KARNATAKA' with a 'Shipped' status.
+-- 43. Calculate the average sales amount for each 'Category' in 'TELANGANA'.
+-- 44. Identify the month with the lowest total sales amount.
+-- 45. Find the total quantity of products sold for each 'ship-postal-code'.
+-- 46. Calculate the average order amount for orders with a quantity greater than 5.
+-- 47. List all orders where the 'Category' is 'kurta' and the 'Size' is 'M'.
+-- 48. Calculate the total sales amount for orders with a 'Shipped' status and 'Courier Status' is 'Delivered to Buyer'.
+-- 49. Identify the top 3 sales channels with the highest total sales amount.
+-- 50. Find the average quantity ordered for each 'ASIN' in 'MUMBAI'.
