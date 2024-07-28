@@ -143,10 +143,19 @@ FROM public.amazon_sales_data
 where "currency" = 'INR'
 
 -- 28. Find the total sales amount for orders fulfilled by 'Easy Ship'.
+select sum("Amount") as sales_amount
+FROM public.amazon_sales_data  
+where "fulfilled-by" = 'Easy Ship'
 
 -- 29. List all orders with a quantity of 1.
+select *
+FROM public.amazon_sales_data  
+where "Qty" = 1
 
 -- 30. Count the number of orders for each courier status.
+select count(*) as Orders, "Courier Status"
+FROM public.amazon_sales_data  
+group by "Courier Status"
 
 -- 31. Calculate the average sales amount for each category.
 
