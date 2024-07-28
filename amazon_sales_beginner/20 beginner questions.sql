@@ -103,155 +103,156 @@ FROM public.amazon_sales_data
 GROUP BY "Fulfilment"
 
 -- 21. List all orders that were shipped in 'MUMBAI'.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "ship-city" = 'MUMBAI'
+WHERE "ship-city" = 'MUMBAI'
 
 -- 22. Find the total sales amount for each state.
-select sum("Amount") as sales_amount, "ship-state"
+SELECT SUM("Amount") AS sales_amount, "ship-state"
 FROM public.amazon_sales_data  
-group by "ship-state"
-order by sales_amount desc
+GROUP BY "ship-state"
+ORDER BY sales_amount DESC
 
 -- 23. Count the number of orders for each size.
-select count(*) as orders, "Size"
+SELECT COUNT(*) AS orders, "Size"
 FROM public.amazon_sales_data  
-group by "Size"
-order by orders desc
+GROUP BY "Size"
+ORDER BY orders DESC
 
 -- 24. Calculate the average sales amount per state.
-select avg("Amount") as sales_amount, "ship-state"
+SELECT AVG("Amount") AS sales_amount, "ship-state"
 FROM public.amazon_sales_data  
-group by "ship-state"
-order by sales_amount desc
+GROUP BY "ship-state"
+ORDER BY sales_amount DESC
 
 -- 25. Find the order with the lowest sales amount.
-select *, "Amount"
+SELECT *, "Amount"
 FROM public.amazon_sales_data  
-where "Amount" >= 1
-order by "Amount" asc
-limit 1
+WHERE "Amount" >= 1
+ORDER BY "Amount" ASC
+LIMIT 1
 
 -- 26. List all orders where the status is 'Shipped' but the fulfilment is 'Merchant'.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "Status" = 'Shipped' and "Fulfilment" = 'Merchant'
+WHERE "Status" = 'Shipped' AND "Fulfilment" = 'Merchant'
 
 -- 27. Count the number of orders with the currency 'INR'.
-select count(*) as INR_orders
+SELECT COUNT(*) AS INR_orders
 FROM public.amazon_sales_data  
-where "currency" = 'INR'
+WHERE "currency" = 'INR'
 
 -- 28. Find the total sales amount for orders fulfilled by 'Easy Ship'.
-select sum("Amount") as sales_amount
+SELECT SUM("Amount") AS sales_amount
 FROM public.amazon_sales_data  
-where "fulfilled-by" = 'Easy Ship'
+WHERE "fulfilled-by" = 'Easy Ship'
 
 -- 29. List all orders with a quantity of 1.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "Qty" = 1
+WHERE "Qty" = 1
 
 -- 30. Count the number of orders for each courier status.
-select count(*) as Orders, "Courier Status"
+SELECT COUNT(*) AS Orders, "Courier Status"
 FROM public.amazon_sales_data  
-group by "Courier Status"
+GROUP BY "Courier Status"
 
 -- 31. Calculate the average sales amount for each category.
-select avg("Amount") as sales_amount, "Category"
+SELECT AVG("Amount") AS sales_amount, "Category"
 FROM public.amazon_sales_data  
-group by "Category"
+GROUP BY "Category"
 
 -- 32. Find the total sales amount for orders shipped to 'HYDERABAD'.
-select sum("Amount") as total_sales
+SELECT SUM("Amount") AS total_sales
 FROM public.amazon_sales_data  
-where "ship-city" = 'HYDERABAD'
+WHERE "ship-city" = 'HYDERABAD'
 
 -- 33. Count the number of orders with the ASIN 'B09KXVBD7Z'.
-select count(*)
+SELECT COUNT(*)
 FROM public.amazon_sales_data  
-where "ASIN" = 'B09KXVBD7Z'
+WHERE "ASIN" = 'B09KXVBD7Z'
 
 -- 34. List all orders that were cancelled.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "Status" = 'Cancelled'
+WHERE "Status" = 'Cancelled'
 
 -- 35. Find the total quantity of products sold in 'TELANGANA'.
-select sum("Qty") as total_products
+SELECT SUM("Qty") AS total_products
 FROM public.amazon_sales_data  
-where "ship-state" = 'TELANGANA'
+WHERE "ship-state" = 'TELANGANA'
 
 -- 36. Count the number of distinct cities orders were shipped to.
-select count(distinct("ship-city")) as unique_cities
+SELECT COUNT(DISTINCT("ship-city")) AS unique_cities
 FROM public.amazon_sales_data  
 
 -- 37. Find the order with the earliest date.
-select min(date("Date")) as earliest_date
+SELECT MIN(DATE("Date")) AS earliest_date
 FROM public.amazon_sales_data  
 
 -- 38. List all orders where the promotion-ids are not null.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "promotion-ids" is not null
+WHERE "promotion-ids" IS NOT NULL
 
 -- 39. Count the number of orders shipped to each country.
-select count(*), "ship-country"
+SELECT COUNT(*), "ship-country"
 FROM public.amazon_sales_data  
-group by "ship-country"
+GROUP BY "ship-country"
 
 -- 40. Calculate the total sales amount for each promotion.
-select count("Amount"), "promotion-ids"
+SELECT COUNT("Amount"), "promotion-ids"
 FROM public.amazon_sales_data  
-group by "promotion-ids"
-order by count desc
+GROUP BY "promotion-ids"
+ORDER BY COUNT DESC
 
 -- 41. List all orders where the sales amount is between 500 and 1000.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "Amount" between 500 and 1000
+WHERE "Amount" BETWEEN 500 AND 1000
 
 -- 42. Find the average sales amount for each courier status.
-select avg("Amount") as sales_amount, "Courier Status"
+SELECT AVG("Amount") AS sales_amount, "Courier Status"
 FROM public.amazon_sales_data  
-group by "Courier Status"
+GROUP BY "Courier Status"
 
 -- 43. Count the number of orders with the SKU 'JNE3405-KR-XXL'
-select count(*) as order_count
+SELECT COUNT(*) AS order_count
 FROM public.amazon_sales_data  
-where "SKU" = 'JNE3405-KR-XXL'
+WHERE "SKU" = 'JNE3405-KR-XXL'
 
 -- 44. List all orders where the size is 'M'.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "Size" = 'M'
+WHERE "Size" = 'M'
 
 -- 45. Find the total sales amount for each ship service level.
-select sum("Amount") as sales_amount, "ship-service-level"
+SELECT SUM("Amount") AS sales_amount, "ship-service-level"
 FROM public.amazon_sales_data  
-group by "ship-service-level"
+GROUP BY "ship-service-level"
 
 -- 46. Count the number of orders with the fulfilment type 'Amazon'
-select count(*) as order_count
+SELECT COUNT(*) AS order_count
 FROM public.amazon_sales_data  
-where "Fulfilment" = 'Amazon'
+WHERE "Fulfilment" = 'Amazon'
 
 -- 47. List all orders with a sales channel of 'Amazon.in'.
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "Sales Channel" = 'Amazon.in'
+WHERE "Sales Channel" = 'Amazon.in'
 
 -- 48. Find the total sales amount for orders with a quantity greater than 1.
-select sum("Amount") as total_amount
+SELECT SUM("Amount") AS total_amount
 FROM public.amazon_sales_data  
-where "Qty" > 1
+WHERE "Qty" > 1
 
 -- 49. Calculate the average sales amount for each sales channel.
-select avg("Amount") as avg_amount, "Sales Channel"
+SELECT AVG("Amount") AS avg_amount, "Sales Channel"
 FROM public.amazon_sales_data  
-group by "Sales Channel"
+GROUP BY "Sales Channel"
 
 -- 50. List all orders with the style 'JNE3697'
-select *
+SELECT *
 FROM public.amazon_sales_data  
-where "Style" = 'JNE3697'
+WHERE "Style" = 'JNE3697'
+
