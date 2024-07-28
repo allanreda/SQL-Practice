@@ -158,22 +158,47 @@ FROM public.amazon_sales_data
 group by "Courier Status"
 
 -- 31. Calculate the average sales amount for each category.
+select avg("Amount") as sales_amount, "Category"
+FROM public.amazon_sales_data  
+group by "Category"
 
 -- 32. Find the total sales amount for orders shipped to 'HYDERABAD'.
+select sum("Amount") as total_sales
+FROM public.amazon_sales_data  
+where "ship-city" = 'HYDERABAD'
 
--- 33. Count the number of orders with a specific ASIN.
+-- 33. Count the number of orders with the ASIN 'B09KXVBD7Z'.
+select count(*)
+FROM public.amazon_sales_data  
+where "ASIN" = 'B09KXVBD7Z'
 
 -- 34. List all orders that were cancelled.
+select *
+FROM public.amazon_sales_data  
+where "Status" = 'Cancelled'
 
 -- 35. Find the total quantity of products sold in 'TELANGANA'.
+select sum("Qty") as total_products
+FROM public.amazon_sales_data  
+where "ship-state" = 'TELANGANA'
 
 -- 36. Count the number of distinct cities orders were shipped to.
+select count(distinct("ship-city")) as unique_cities
+FROM public.amazon_sales_data  
 
 -- 37. Find the order with the earliest date.
+select min(date("Date")) as earliest_date
+FROM public.amazon_sales_data  
 
 -- 38. List all orders where the promotion-ids are not null.
+select *
+FROM public.amazon_sales_data  
+where "promotion-ids" is not null
 
 -- 39. Count the number of orders shipped to each country.
+select count(*), "ship-country"
+FROM public.amazon_sales_data  
+group by "ship-country"
 
 -- 40. Calculate the total sales amount for each promotion.
 
