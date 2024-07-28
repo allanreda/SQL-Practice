@@ -212,20 +212,46 @@ FROM public.amazon_sales_data
 where "Amount" between 500 and 1000
 
 -- 42. Find the average sales amount for each courier status.
+select avg("Amount") as sales_amount, "Courier Status"
+FROM public.amazon_sales_data  
+group by "Courier Status"
 
--- 43. Count the number of orders with a specific SKU.
+-- 43. Count the number of orders with the SKU 'JNE3405-KR-XXL'
+select count(*) as order_count
+FROM public.amazon_sales_data  
+where "SKU" = 'JNE3405-KR-XXL'
 
 -- 44. List all orders where the size is 'M'.
+select *
+FROM public.amazon_sales_data  
+where "Size" = 'M'
 
 -- 45. Find the total sales amount for each ship service level.
+select sum("Amount") as sales_amount, "ship-service-level"
+FROM public.amazon_sales_data  
+group by "ship-service-level"
 
--- 46. Count the number of orders with a specific fulfilment type.
+-- 46. Count the number of orders with the fulfilment type 'Amazon'
+select count(*) as order_count
+FROM public.amazon_sales_data  
+where "Fulfilment" = 'Amazon'
 
 -- 47. List all orders with a sales channel of 'Amazon.in'.
+select *
+FROM public.amazon_sales_data  
+where "Sales Channel" = 'Amazon.in'
 
 -- 48. Find the total sales amount for orders with a quantity greater than 1.
+select sum("Amount") as total_amount
+FROM public.amazon_sales_data  
+where "Qty" > 1
 
 -- 49. Calculate the average sales amount for each sales channel.
+select avg("Amount") as avg_amount, "Sales Channel"
+FROM public.amazon_sales_data  
+group by "Sales Channel"
 
--- 50. List all orders with a specific style.
-
+-- 50. List all orders with the style 'JNE3697'
+select *
+FROM public.amazon_sales_data  
+where "Style" = 'JNE3697'
