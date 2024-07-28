@@ -201,8 +201,15 @@ FROM public.amazon_sales_data
 group by "ship-country"
 
 -- 40. Calculate the total sales amount for each promotion.
+select count("Amount"), "promotion-ids"
+FROM public.amazon_sales_data  
+group by "promotion-ids"
+order by count desc
 
 -- 41. List all orders where the sales amount is between 500 and 1000.
+select *
+FROM public.amazon_sales_data  
+where "Amount" between 500 and 1000
 
 -- 42. Find the average sales amount for each courier status.
 
