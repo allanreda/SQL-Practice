@@ -167,13 +167,49 @@ FROM public.amazon_sales_data
 where "Date" ~ '^04-\d{2}-\d{2}(\d{2})?$'
 
 -- 28. Calculate the average order amount for orders with a quantity of 1.
+select avg("Amount") as avg_amount
+FROM public.amazon_sales_data  
+where "Qty" = 1
+
 -- 29. List all orders where the 'Size' is not specified.
+select *
+FROM public.amazon_sales_data  
+where "Size" = null
+
 -- 30. Find the total sales amount for each 'ship-country'.
+select sum("Amount") as sales_amount, "ship-country"
+FROM public.amazon_sales_data  
+group by "ship-country"
+
 -- 31. Calculate the average quantity ordered for orders with a 'Shipped' status.
+select avg("Qty")
+FROM public.amazon_sales_data  
+where "Status" = 'Shipped'
+
 -- 32. Identify the top 3 ASINs with the highest average sales amount.
+select avg("Amount") as avg_amount, "ASIN"
+FROM public.amazon_sales_data  
+where "Amount" is not null
+group by "ASIN"
+order by avg_amount desc
+limit 3
+
 -- 33. Count the number of orders for each 'ship-service-level'.
+select count(*) as order_acount, "ship-service-level"
+FROM public.amazon_sales_data  
+group by "ship-service-level"
+
 -- 34. Calculate the total sales amount for each 'ship-city' in 'MAHARASHTRA'.
+select sum("Amount") as sales_amount, "ship-city"
+FROM public.amazon_sales_data  
+where "ship-state" = 'MAHARASHTRA'
+group by "ship-city" 
+
 -- 35. Find the total quantity of products sold for each 'fulfilled-by' type.
+select sum("Qty") as products_sold, "fulfilled-by"
+FROM public.amazon_sales_data  
+group by "fulfilled-by"
+
 -- 36. List all orders where the 'Sales Channel' is 'Amazon.in' and the 'Status' is 'Cancelled'.
 -- 37. Calculate the average sales amount for each 'promotion-id'.
 -- 38. Identify the state with the highest average quantity ordered per order.
