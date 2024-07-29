@@ -96,10 +96,34 @@ group by "ship-state"
 order by "ship-state" desc
 
 -- 16. Count the number of orders with a status of 'Cancelled' for each state.
+select count(*) as cancelled_orders, "ship-state"
+FROM public.amazon_sales_data  
+where "Status" = 'Cancelled'
+group by "ship-state"
+order by cancelled_orders desc
+
 -- 17. Calculate the total sales amount for orders with a promotion applied.
+select sum("Amount") as promotion_order_amount
+FROM public.amazon_sales_data  
+where "promotion-ids" is not null
+
 -- 18. Find the most frequently ordered size.
+select count(*) as order_count, "Size"
+FROM public.amazon_sales_data  
+group by "Size"
+order by order_count desc
+limit 1
+
 -- 19. List all orders that were fulfilled by 'Merchant'.
+select *
+FROM public.amazon_sales_data  
+where "Fulfilment" = 'Merchant'
+
 -- 20. Calculate the average sales amount for each 'ship-service-level'.
+select avg("Amount") as avg_amount, "ship-service-level"
+FROM public.amazon_sales_data  
+group by "ship-service-level"
+
 -- 21. Identify the top 5 products with the highest quantity sold.
 -- 22. Calculate the total sales amount for each courier status.
 -- 23. Find the state with the highest number of 'Cancelled' orders.
