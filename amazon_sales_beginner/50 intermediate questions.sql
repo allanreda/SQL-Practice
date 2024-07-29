@@ -211,10 +211,33 @@ FROM public.amazon_sales_data
 group by "fulfilled-by"
 
 -- 36. List all orders where the 'Sales Channel' is 'Amazon.in' and the 'Status' is 'Cancelled'.
+select *
+FROM public.amazon_sales_data  
+where "Sales Channel" = 'Amazon.in' and "Status" = 'Cancelled'
+
 -- 37. Calculate the average sales amount for each 'promotion-id'.
+select avg("Amount") as avg_amount, "promotion-ids"
+FROM public.amazon_sales_data  
+group by "promotion-ids"
+
 -- 38. Identify the state with the highest average quantity ordered per order.
+select avg("Qty") as avg_qty, "ship-state"
+FROM public.amazon_sales_data  
+where "Qty" is not null
+group by "ship-state"
+order by avg_qty desc
+limit 1
+
 -- 39. Find the total sales amount for orders shipped to each postal code.
+select sum("Amount") as sales_amount, "ship-postal-code"
+FROM public.amazon_sales_data  
+group by "ship-postal-code"
+
 -- 40. Calculate the total sales amount for orders with a sales amount greater than 1000.
+select sum("Amount") as sales_amount_over_1000
+FROM public.amazon_sales_data  
+where "Amount" > 1000
+
 -- 41. List all orders where the 'Style' is not null.
 -- 42. Count the number of orders shipped to 'KARNATAKA' with a 'Shipped' status.
 -- 43. Calculate the average sales amount for each 'Category' in 'TELANGANA'.
