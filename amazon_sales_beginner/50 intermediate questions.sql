@@ -58,12 +58,43 @@ group by "ship-city"
 order by avg_amount desc
 
 -- 11. Calculate the total sales amount for each date.
-
+select sum("Amount") as sales_amount, "Date"
+FROM public.amazon_sales_data  
+group by "Date"
 
 -- 12. Identify the month with the highest number of orders.
+select 
+	count(*) as order_count, 
+    extract(month from normalized_date) as order_month,
+    extract(year from normalized_date) as order_year
+FROM 
+    (SELECT 
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+group by order_month, order_year
+order by order_count desc
+
 -- 13. List all orders where the quantity ordered is less than 5.
+select *
+FROM public.amazon_sales_data  
+where "Qty" < 5
+
 -- 14. Calculate the average order amount for each fulfilment type.
+select count("Amount") as sales_amount, "Fulfilment"
+FROM public.amazon_sales_data  
+group by "Fulfilment"
+
 -- 15. Find the top 3 states with the highest average sales amount per order.
+select avg("Amount") avg_amount, "ship-state"
+FROM public.amazon_sales_data  
+where "Amount" is not null and "ship-state" is not null
+group by "ship-state"
+order by "ship-state" desc
+
 -- 16. Count the number of orders with a status of 'Cancelled' for each state.
 -- 17. Calculate the total sales amount for orders with a promotion applied.
 -- 18. Find the most frequently ordered size.
