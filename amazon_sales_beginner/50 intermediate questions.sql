@@ -155,7 +155,17 @@ FROM public.amazon_sales_data
 group by "Sales Channel"
 
 -- 26. Identify the product category with the lowest average sales amount.
+select avg("Amount") as avg_amount, "Category"
+FROM public.amazon_sales_data  
+group by "Category"
+order by avg_amount asc
+limit 1
+
 -- 27. Find the total sales amount for orders shipped in the month of April.
+select sum("Amount") as sales_amount
+FROM public.amazon_sales_data  
+where "Date" ~ '^04-\d{2}-\d{2}(\d{2})?$'
+
 -- 28. Calculate the average order amount for orders with a quantity of 1.
 -- 29. List all orders where the 'Size' is not specified.
 -- 30. Find the total sales amount for each 'ship-country'.
