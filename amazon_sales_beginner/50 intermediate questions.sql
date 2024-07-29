@@ -125,10 +125,35 @@ FROM public.amazon_sales_data
 group by "ship-service-level"
 
 -- 21. Identify the top 5 products with the highest quantity sold.
+select avg("Qty") as qty_sold, "SKU"
+FROM public.amazon_sales_data  
+group by "SKU"
+order by qty_sold desc
+limit 5
+
 -- 22. Calculate the total sales amount for each courier status.
+select sum("Amount") as sales_amount, "Courier Status"
+FROM public.amazon_sales_data  
+group by "Courier Status"
+
 -- 23. Find the state with the highest number of 'Cancelled' orders.
+select count(*) as cancelled_orders, "ship-state"
+FROM public.amazon_sales_data  
+where "Status" = 'Cancelled'
+group by "ship-state"
+order by cancelled_orders desc
+limit 1
+
 -- 24. List all orders where the promotion-ids contain more than one promotion.
+select *
+FROM public.amazon_sales_data  
+where REGEXP_COUNT("promotion-ids", ',') > 1
+
 -- 25. Calculate the total quantity of products sold for each sales channel.
+select sum("Qty"), "Sales Channel"
+FROM public.amazon_sales_data  
+group by "Sales Channel"
+
 -- 26. Identify the product category with the lowest average sales amount.
 -- 27. Find the total sales amount for orders shipped in the month of April.
 -- 28. Calculate the average order amount for orders with a quantity of 1.
