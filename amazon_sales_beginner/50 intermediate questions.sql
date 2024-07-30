@@ -239,8 +239,21 @@ FROM public.amazon_sales_data
 where "Amount" > 1000
 
 -- 41. List all orders where the 'Style' is not null.
+select *
+FROM public.amazon_sales_data  
+where "Style" is not null
+
 -- 42. Count the number of orders shipped to 'KARNATAKA' with a 'Shipped' status.
+select count(*) as orders
+FROM public.amazon_sales_data  
+where "ship-state" = 'KARNATAKA' and "Status" = 'Shipped'
+
 -- 43. Calculate the average sales amount for each 'Category' in 'TELANGANA'.
+select avg("Amount") as avg_amount, "Category"
+FROM public.amazon_sales_data  
+where "ship-state" = 'TELANGANA'
+group by "Category"
+
 -- 44. Identify the month with the lowest total sales amount.
 -- 45. Find the total quantity of products sold for each 'ship-postal-code'.
 -- 46. Calculate the average order amount for orders with a quantity greater than 5.
