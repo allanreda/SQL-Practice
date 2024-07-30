@@ -283,6 +283,26 @@ FROM public.amazon_sales_data
 where "Qty" > 5 
 
 -- 47. List all orders where the 'Category' is 'kurta' and the 'Size' is 'M'.
+select *
+FROM public.amazon_sales_data
+where "Category" = 'kurta' and "Size" = 'M'
+
 -- 48. Calculate the total sales amount for orders with a 'Shipped' status and 'Courier Status' is 'Delivered to Buyer'.
+select sum("Amount") as sales_amount
+FROM public.amazon_sales_data
+where "Status" = 'Shipped' and "Courier Status" = 'Delivered to Buyer'
+
 -- 49. Identify the top 3 sales channels with the highest total sales amount.
+select sum("Amount") as sales_amount, "Sales Channel"
+FROM public.amazon_sales_data
+group by "Sales Channel"
+order by sales_amount desc
+limit 3
+
 -- 50. Find the average quantity ordered for each 'ASIN' in 'MUMBAI'.
+select avg("Qty") as avg_qty, "ASIN"
+FROM public.amazon_sales_data
+where "ship-city" = 'MUMBAI'
+group by "ASIN"
+
+
