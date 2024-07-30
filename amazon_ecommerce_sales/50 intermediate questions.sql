@@ -255,8 +255,33 @@ where "ship-state" = 'TELANGANA'
 group by "Category"
 
 -- 44. Identify the month with the lowest total sales amount.
+select 
+	sum("Amount") as order_amount,
+    extract(month from normalized_date) as order_month,
+    extract(year from normalized_date) as order_year
+FROM 
+    (SELECT 
+	    "Amount",
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+group by order_month, order_year
+order by order_amount asc
+limit 1
+
 -- 45. Find the total quantity of products sold for each 'ship-postal-code'.
+select sum("Qty") as products_sold, "ship-postal-code"
+FROM public.amazon_sales_data
+group by "ship-postal-code"
+
 -- 46. Calculate the average order amount for orders with a quantity greater than 5.
+select avg("Amount") as avg_amount
+FROM public.amazon_sales_data
+where "Qty" > 5 
+
 -- 47. List all orders where the 'Category' is 'kurta' and the 'Size' is 'M'.
 -- 48. Calculate the total sales amount for orders with a 'Shipped' status and 'Courier Status' is 'Delivered to Buyer'.
 -- 49. Identify the top 3 sales channels with the highest total sales amount.
