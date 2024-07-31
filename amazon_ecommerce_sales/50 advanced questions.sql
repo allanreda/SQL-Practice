@@ -69,8 +69,90 @@ order by
 	correlation desc
 
 -- 6. List the top 5 states with the highest number of orders for each month.
+WITH monthly_state_orders AS (
+	select 
+	count(*) as order_count, 
+    "ship-state", 
+    EXTRACT(YEAR FROM normalized_date) AS year, 
+    EXTRACT(MONTH FROM normalized_date) AS month
+FROM 
+    (SELECT 
+        "ship-state",
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+group by 
+	"ship-state", 
+	month, 
+	year),	
+ranked_orders AS (
+    SELECT 
+        "ship-state", 
+        year, 
+        month, 
+        order_count,
+        RANK() OVER (PARTITION BY year, month ORDER BY order_count DESC) AS rank
+    FROM 
+        monthly_state_orders
+)
+SELECT 
+    "ship-state", 
+    year, 
+    month, 
+    order_count
+FROM 
+    ranked_orders
+WHERE 
+    rank <= 5
+ORDER BY 
+    year, 
+    month, 
+    rank;
+
 -- 7. Calculate the total sales amount for orders with promotion-ids applied for each sales channel.
+select 
+	sum("Amount") as sales_amount,
+	"Sales Channel"
+FROM public.amazon_sales_data
+where 
+	"promotion-ids" is not null
+group by "Sales Channel"
+
 -- 8. Identify the top 3 sizes with the highest sales amount for each product category.
+with category_sizes as (
+	select 
+	sum("Amount") as sales_amount, 
+	"Size", 
+	"Category"
+FROM 
+	public.amazon_sales_data
+group by 
+	"Size", 
+	"Category"
+),
+ranked_orders AS (
+    SELECT 
+	"Size", 
+	"Category", 
+	sales_amount,
+        RANK() OVER (PARTITION BY "Category" ORDER BY sales_amount DESC) AS rank
+    FROM 
+        category_sizes
+)
+select 
+	"Size", 
+	"Category", 
+	sales_amount
+from ranked_orders
+where 
+	rank <= 3
+order by  
+	"Category", 
+	rank
+
 -- 9. Calculate the average quantity ordered per order for each ship-service-level in each city.
 -- 10. Find the total sales amount for orders shipped in each quarter of the year.
 -- 11. Identify the top 5 cities with the highest average sales amount per order for each fulfilment type.
