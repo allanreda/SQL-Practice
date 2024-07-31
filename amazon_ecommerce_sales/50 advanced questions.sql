@@ -1,8 +1,73 @@
 -- 1. Calculate the total sales amount for each product category in each state.
+SELECT SUM("Amount") AS sales_amount, "Category", "ship-state"
+FROM public.amazon_sales_data
+GROUP BY "Category", "ship-state"
+
+
 -- 2. Identify the top 10 products (ASINs) with the highest sales amount in each city.
+SELECT "ASIN", "ship-city", sales_amount
+FROM (
+    SELECT 
+        "ASIN", 
+        "ship-city", 
+        SUM("Amount") AS sales_amount,
+        RANK() OVER (PARTITION BY "ship-city" ORDER BY SUM("Amount") DESC) AS rank
+    FROM public.amazon_sales_data
+    WHERE "Amount" IS NOT NULL
+    GROUP BY "ASIN", "ship-city"
+) AS ranked_sales
+WHERE rank <= 10
+ORDER BY "ship-city", rank;
+
 -- 3. Find the monthly trend of total sales amount for each fulfilment type.
+SELECT 
+    "Fulfilment", 
+    EXTRACT(YEAR FROM normalized_date) AS year, 
+    EXTRACT(MONTH FROM normalized_date) AS month, 
+    SUM("Amount") AS total_sales_amount
+FROM 
+    (SELECT 
+        "Amount", 
+        "Fulfilment",
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+WHERE 
+    normalized_date IS NOT NULL
+GROUP BY 
+    "Fulfilment", 
+    year, 
+    month
+ORDER BY 
+    "Fulfilment", 
+    year, 
+    month
+
 -- 4. Calculate the average sales amount per order for each combination of fulfilment type and courier status.
+select 
+	avg("Amount") as sales_amount, 
+	"Fulfilment", 
+	"Courier Status"
+FROM public.amazon_sales_data
+group by 
+	"Fulfilment", 
+	"Courier Status"
+
 -- 5. Determine the correlation between the quantity ordered and the sales amount for each product category.
+select 
+	sum("Qty") as quantity, 
+	sum("Amount") as sales_amount, 
+	"Category",
+	CORR("Qty", "Amount") AS correlation
+FROM public.amazon_sales_data
+group by 
+	"Category"
+order by 
+	correlation desc
+
 -- 6. List the top 5 states with the highest number of orders for each month.
 -- 7. Calculate the total sales amount for orders with promotion-ids applied for each sales channel.
 -- 8. Identify the top 3 sizes with the highest sales amount for each product category.
