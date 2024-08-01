@@ -1,7 +1,7 @@
 -- 1. Calculate the total sales amount for each product category in each state.
 SELECT SUM("Amount") AS sales_amount, "Category", "ship-state"
 FROM public.amazon_sales_data
-GROUP BY "Category", "ship-state"
+GROUP BY "Category", "ship-state";
 
 
 -- 2. Identify the top 10 products (ASINs) with the highest sales amount in each city.
@@ -44,7 +44,7 @@ GROUP BY
 ORDER BY 
     "Fulfilment", 
     year, 
-    month
+    month;
 
 -- 4. Calculate the average sales amount per order for each combination of fulfilment type and courier status.
 select 
@@ -54,7 +54,7 @@ select
 FROM public.amazon_sales_data
 group by 
 	"Fulfilment", 
-	"Courier Status"
+	"Courier Status";
 
 -- 5. Determine the correlation between the quantity ordered and the sales amount for each product category.
 select 
@@ -66,7 +66,7 @@ FROM public.amazon_sales_data
 group by 
 	"Category"
 order by 
-	correlation desc
+	correlation desc;
 
 -- 6. List the top 5 states with the highest number of orders for each month.
 WITH monthly_state_orders AS (
@@ -119,7 +119,7 @@ select
 FROM public.amazon_sales_data
 where 
 	"promotion-ids" is not null
-group by "Sales Channel"
+group by "Sales Channel";
 
 -- 8. Identify the top 3 sizes with the highest sales amount for each product category.
 with category_sizes as (
@@ -151,11 +151,74 @@ where
 	rank <= 3
 order by  
 	"Category", 
-	rank
+	rank;
 
 -- 9. Calculate the average quantity ordered per order for each ship-service-level in each city.
--- 10. Find the total sales amount for orders shipped in each quarter of the year.
+select 
+	avg("Qty") as avg_qty, 
+	"ship-service-level", 
+	"ship-city"
+FROM 
+	public.amazon_sales_data
+group by 
+	"ship-service-level", 
+	"ship-city";
+
+-- 10. Find the total sales amount for each product category in each month.
+select 
+	sum("Amount") as sales_amount,
+	"Category",
+	EXTRACT(MONTH FROM normalized_date) AS month,
+	EXTRACT(YEAR FROM normalized_date) AS year
+FROM 
+    (SELECT 
+        "Amount", 
+        "Category",
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+group by 
+	"Category",
+	month,
+	year;
+
 -- 11. Identify the top 5 cities with the highest average sales amount per order for each fulfilment type.
+with city_fulfilment as(
+	select
+	avg("Amount") as avg_amount, 
+	"ship-city", 
+	"Fulfilment"
+FROM 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-city", 
+	"Fulfilment"
+),
+ranked_amounts as (
+	select 
+	avg_amount, 
+	"ship-city", 
+	"Fulfilment",
+	rank() over (partition by "Fulfilment" order by avg_amount desc) as rank
+	from city_fulfilment
+)
+select 
+	avg_amount, 
+	"ship-city", 
+	"Fulfilment",
+	rank
+from ranked_amounts
+where 
+	rank <= 5
+order by 
+	"Fulfilment",
+	rank;
+
 -- 12. Calculate the total quantity of products sold for each combination of size and ship-country.
 -- 13. Determine the trend of the number of orders cancelled each month for each state.
 -- 14. Find the top 3 product categories with the highest average sales amount in each city.
