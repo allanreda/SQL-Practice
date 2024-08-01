@@ -187,7 +187,7 @@ group by
 
 -- 11. Identify the top 5 cities with the highest average sales amount per order for each fulfilment type.
 with city_fulfilment as(
-	select
+	select 
 	avg("Amount") as avg_amount, 
 	"ship-city", 
 	"Fulfilment"
@@ -220,10 +220,138 @@ order by
 	rank;
 
 -- 12. Calculate the total quantity of products sold for each combination of size and ship-country.
+select 
+	sum("Qty") as total_qty,
+	"Size", 
+	"ship-country"
+from public.amazon_sales_data
+group by 
+	"Size", 
+	"ship-country";
+
 -- 13. Determine the trend of the number of orders cancelled each month for each state.
+SELECT 
+    "ship-state", 
+    EXTRACT(YEAR FROM normalized_date) AS year, 
+    EXTRACT(MONTH FROM normalized_date) AS month, 
+    count(*) as cancelled_orders
+FROM 
+    (SELECT 
+    "ship-state", 
+	"Status",   
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+WHERE 
+    normalized_date IS NOT NULL and "Status" = 'Cancelled'
+GROUP BY 
+    "ship-state", 
+    year, 
+    month
+ORDER BY 
+    "ship-state", 
+    year, 
+    month;
+
 -- 14. Find the top 3 product categories with the highest average sales amount in each city.
+with category_city as(
+	select avg("Amount") as avg_amounts,
+	"Category", 
+	"ship-city"
+FROM 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by
+	"Category",
+	"ship-city"
+),
+ranked_avgs as (
+	select 
+	avg_amounts,
+	"Category", 
+	"ship-city",
+	rank() over (partition by "ship-city" order by avg_amounts desc) as rank
+from category_city
+)
+select 
+	avg_amounts, 
+	"Category", 
+	"ship-city",
+	rank
+from 
+	ranked_avgs
+where
+	rank <= 3
+order by 
+	"ship-city",
+	rank;
+
 -- 15. Calculate the total sales amount for each courier status in each month of the year.
+select 
+	sum("Amount") as sales_amount,
+	"Courier Status", 
+	EXTRACT(YEAR FROM normalized_date) AS year, 
+    EXTRACT(MONTH FROM normalized_date) AS month
+FROM 
+    (SELECT 
+    "Amount", 
+	"Courier Status",   
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+where 
+	"Amount" is not null 
+	and "Courier Status" is not null
+group by 
+	"Courier Status", 
+	month, 
+	year
+order by 
+	year,
+	month;
+
 -- 16. Identify the top 5 ASINs with the highest quantity sold in each ship-service-level.
+with top_asins as ( 
+	select
+	sum("Qty") as qty_sold, 
+	"ASIN", 
+	"ship-service-level"
+FROM 
+	public.amazon_sales_data
+where 
+	"Qty" is not null
+group by 
+	"ASIN", 
+	"ship-service-level"
+),
+ranked_qtys as (
+	select 
+	qty_sold,
+	"ASIN", 
+	"ship-service-level",
+	rank() over (partition by "ship-service-level" order by qty_sold desc) as rank
+from top_asins
+)
+select 
+	qty_sold, 
+	"ASIN", 
+	"ship-service-level", 
+	rank
+from 
+	ranked_qtys
+where 
+	rank <= 5
+order by 
+	"ship-service-level", 
+	rank;
+
 -- 17. Calculate the average sales amount for each ship-postal-code for each state.
 -- 18. Determine the top 5 cities with the lowest average sales amount per order for each courier status.
 -- 19. Find the total sales amount for each fulfilled-by type for each sales channel.
