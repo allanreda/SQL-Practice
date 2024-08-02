@@ -371,6 +371,40 @@ order by
 
 
 -- 18. Determine the top 5 cities with the lowest average sales amount per order for each courier status.
+with top_cities as (
+	select
+	avg("Amount") as avg_amount,
+	"ship-city",
+	"Courier Status"
+FROM 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-city",
+	"Courier Status"
+),
+ranked_orders as (
+	select
+	avg_amount,
+	"ship-city",
+	"Courier Status",
+	rank() over (partition by "Courier Status" order by avg_amount asc) as rank
+from top_cities
+)
+select 
+	avg_amount,
+	"ship-city",
+	"Courier Status",
+	rank
+from 
+	ranked_orders
+where 
+	rank <= 5
+order by 
+	"Courier Status", 
+	rank;
+
 -- 19. Find the total sales amount for each fulfilled-by type for each sales channel.
 -- 20. Calculate the total quantity of products sold for each ship-country in each quarter.
 -- 21. Identify the top 3 states with the highest number of orders for each promotion-id.
