@@ -406,8 +406,80 @@ order by
 	rank;
 
 -- 19. Find the total sales amount for each fulfilled-by type for each sales channel.
--- 20. Calculate the total quantity of products sold for each ship-country in each quarter.
+select 
+	sum("Amount") as sales_amount, 
+	"Fulfilment", 
+	"Sales Channel"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"Fulfilment", 
+	"Sales Channel"
+order by 
+	sales_amount desc;
+
+-- 20. Calculate the total quantity of products sold for each ship-country in each month.
+select 
+	sum("Qty") as total_qty, 
+	"ship-country",
+    EXTRACT(MONTH FROM normalized_date) AS month,
+	EXTRACT(YEAR FROM normalized_date) AS year
+FROM 
+    (SELECT 
+    "Qty", 
+	"ship-country",   
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery 
+where 
+	"ship-country" is not null
+group by 
+	"ship-country", 
+	month, 
+	year
+order by 
+	month, 
+	year;
+
 -- 21. Identify the top 3 states with the highest number of orders for each promotion-id.
+with state_orders as(
+	select 
+	count(*) as order_count, 
+	"ship-state", 
+	"promotion-ids"
+from 
+	public.amazon_sales_data
+group by 
+	"ship-state", 
+	"promotion-ids"
+),
+ranked_orders as (
+	select
+	order_count,
+	"ship-state", 
+	"promotion-ids",
+	rank() over (partition by "promotion-ids" order by order_count desc) as rank
+from state_orders
+)
+select 
+	order_count,
+	"ship-state", 
+	rank,
+	"promotion-ids"
+from 
+	ranked_orders
+where 
+	rank <= 3
+order by  
+	"promotion-ids", 
+	rank;
+	
+	
 -- 22. Calculate the average order amount for each combination of ship-service-level and sales channel.
 -- 23. Determine the correlation between the number of orders and the total sales amount for each month in each state.
 -- 24. Find the total sales amount for each ship-city for orders with a quantity greater than 5.
