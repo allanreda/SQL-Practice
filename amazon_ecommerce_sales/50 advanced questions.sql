@@ -353,6 +353,23 @@ order by
 	rank;
 
 -- 17. Calculate the average sales amount for each ship-postal-code for each state.
+select 
+	avg("Amount") as avg_amount,
+	"ship-postal-code", 
+	"ship-state"
+from 	
+	public.amazon_sales_data
+where 
+	"Amount" is not null 
+	and "ship-postal-code" is not null
+	and "ship-state" is not null
+group by 
+	"ship-postal-code", 
+	"ship-state"
+order by 
+	avg_amount desc
+
+
 -- 18. Determine the top 5 cities with the lowest average sales amount per order for each courier status.
 -- 19. Find the total sales amount for each fulfilled-by type for each sales channel.
 -- 20. Calculate the total quantity of products sold for each ship-country in each quarter.
