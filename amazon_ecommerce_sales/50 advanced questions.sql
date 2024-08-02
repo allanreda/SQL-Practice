@@ -479,10 +479,74 @@ order by
 	"promotion-ids", 
 	rank;
 	
-	
 -- 22. Calculate the average order amount for each combination of ship-service-level and sales channel.
+select 
+	avg("Amount") as avg_amount, 
+	"ship-service-level", 
+	"Sales Channel"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-service-level", 
+	"Sales Channel"
+
 -- 23. Determine the correlation between the number of orders and the total sales amount for each month in each state.
+WITH monthly_data AS (
+    SELECT 
+        "ship-state",
+        EXTRACT(MONTH FROM normalized_date) AS month,
+        EXTRACT(YEAR FROM normalized_date) AS year,
+        COUNT(*) AS order_count,
+        SUM("Amount") AS sales_amount
+    FROM (
+        SELECT 
+            "Amount",
+            "ship-state",
+            CASE 
+                WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+                WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+                ELSE NULL
+            END AS normalized_date
+        FROM public.amazon_sales_data
+    ) AS base_data
+    WHERE normalized_date IS NOT NULL
+    GROUP BY 
+        "ship-state", 
+        EXTRACT(MONTH FROM normalized_date),
+        EXTRACT(YEAR FROM normalized_date)
+)
+SELECT 
+    "ship-state",
+    month,
+    year,
+    order_count,
+    sales_amount,
+    CORR(order_count, sales_amount) OVER (PARTITION BY "ship-state") AS correlation
+FROM 
+    monthly_data
+WHERE 
+	order_count is not null and
+	sales_amount is not null
+ORDER BY 
+    "ship-state",
+    year,
+    month;
+
 -- 24. Find the total sales amount for each ship-city for orders with a quantity greater than 5.
+select 
+	sum("Amount") as sales_amount, 
+	"ship-city", 
+	sum("Qty") as total_qty
+from 
+	public.amazon_sales_data
+where 
+	"Qty" > 5 and
+	"Amount" is not null
+group by 
+	"ship-city";
+
 -- 25. Calculate the average quantity ordered per order for each product category in each month.
 -- 26. Identify the top 5 ship-postal-codes with the highest total sales amount for each size.
 -- 27. Determine the trend of the average sales amount per order for each sales channel over the past year.
