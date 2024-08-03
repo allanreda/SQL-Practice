@@ -571,9 +571,81 @@ group by
 	year;
 
 -- 26. Identify the top 5 ship-postal-codes with the highest total sales amount for each size.
--- 27. Determine the trend of the average sales amount per order for each sales channel over the past year.
+with postal_orders as(
+	select 
+	sum("Amount") as total_amount, 
+	"ship-postal-code", 
+	"Size"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-postal-code", 
+	"Size"
+),
+ranked_orders as (
+	select
+	total_amount,
+	"ship-postal-code", 
+	"Size",
+	rank() over (partition by "Size" order by total_amount desc) as rank
+from 
+	postal_orders
+)
+select 
+	total_amount,
+	"ship-postal-code", 
+	"Size", 
+	rank
+from 
+	ranked_orders
+where 
+	rank <= 5
+order by 
+	"Size", 
+	rank;
+
+-- 27. Calculate the average sales amount per order for each product category across different sales channels.
+select 
+	avg("Amount") as avg_sales, 
+	"Category", 
+	"Sales Channel"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"Category", 
+	"Sales Channel"
+order by 
+	avg_sales desc;
+
 -- 28. Find the total sales amount for each ASIN for orders shipped using 'Standard' service level.
+select 
+	sum("Amount") as total_sales, 
+	"ASIN"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null 
+	and "ship-service-level" = 'Standard'
+group by 
+	"ASIN";
+
 -- 29. Calculate the average sales amount for each combination of ship-country and fulfilment type.
+select 
+	avg("Amount") as avg_amount, 
+	"ship-country", 
+	"Fulfilment"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null 
+group by
+	"ship-country", 
+	"Fulfilment";
+
 -- 30. Identify the top 3 sizes with the highest average quantity ordered for each courier status.
 -- 31. Find the total sales amount for orders with promotion-ids applied for each month.
 -- 32. Calculate the average order amount for each combination of ship-service-level and promotion-id.
