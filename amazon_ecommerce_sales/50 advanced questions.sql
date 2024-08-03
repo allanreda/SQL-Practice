@@ -548,6 +548,28 @@ group by
 	"ship-city";
 
 -- 25. Calculate the average quantity ordered per order for each product category in each month.
+select 
+	avg("Qty") as avg_qty, 
+	"Category", 
+	EXTRACT(MONTH FROM normalized_date) AS month,
+	EXTRACT(YEAR FROM normalized_date) AS year
+FROM 
+    (SELECT 
+    "Qty", 
+	"Category",   
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+where 
+	"Qty" is not null
+group by 
+	"Category", 
+	month, 
+	year;
+
 -- 26. Identify the top 5 ship-postal-codes with the highest total sales amount for each size.
 -- 27. Determine the trend of the average sales amount per order for each sales channel over the past year.
 -- 28. Find the total sales amount for each ASIN for orders shipped using 'Standard' service level.
