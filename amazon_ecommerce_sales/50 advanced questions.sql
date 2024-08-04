@@ -680,7 +680,42 @@ where
 	rank <= 3
 
 -- 31. Find the total sales amount for orders with promotion-ids applied for each month.
+select 
+	EXTRACT(MONTH FROM normalized_date) AS month,
+	EXTRACT(YEAR FROM normalized_date) AS year,
+	sum("Amount") as total_sales
+FROM 
+    (SELECT 
+    "Amount",
+	"promotion-ids",
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+where 
+	"Amount" is not null and
+	"promotion-ids" is not null
+group by 
+	month, 
+	year
+order by 
+	total_sales desc;
+
 -- 32. Calculate the average order amount for each combination of ship-service-level and promotion-id.
+select 
+	avg("Amount") as avg_amount, 
+	"ship-service-level", 
+	"promotion-ids"
+FROM public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-service-level", 
+	"promotion-ids"
+order by avg_amount desc;
+
 -- 33. Determine the correlation between the fulfilment type and the courier status for each state.
 -- 34. Identify the top 5 states with the highest average sales amount per order for each ship-service-level.
 -- 35. Calculate the total quantity of products sold for each ship-postal-code in each month.
