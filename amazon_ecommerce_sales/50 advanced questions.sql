@@ -647,6 +647,38 @@ group by
 	"Fulfilment";
 
 -- 30. Identify the top 3 sizes with the highest average quantity ordered for each courier status.
+with size_quantities as(
+	select
+	avg("Qty") as avg_qty, 
+	"Size", 
+	"Courier Status"
+from 
+	public.amazon_sales_data
+where 
+	"Qty" is not null
+group by 
+	"Size", 
+	"Courier Status"
+),
+ranked_orders as (
+	select
+	avg_qty,
+	"Size",
+	"Courier Status",
+	rank() over (partition by "Courier Status" order by avg_qty desc) as rank
+from 
+	size_quantities
+)
+select
+	avg_qty,
+	"Size",
+	"Courier Status",
+	rank
+from 
+	ranked_orders
+where 
+	rank <= 3
+
 -- 31. Find the total sales amount for orders with promotion-ids applied for each month.
 -- 32. Calculate the average order amount for each combination of ship-service-level and promotion-id.
 -- 33. Determine the correlation between the fulfilment type and the courier status for each state.
