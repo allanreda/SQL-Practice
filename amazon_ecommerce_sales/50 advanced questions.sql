@@ -792,11 +792,82 @@ group by
 order by 
 	avg_qty desc;
 
-
 -- 36. Find the average sales amount for each combination of ship-city and sales channel.
--- 37. Determine the trend of the total quantity of products sold for each product category over the past year.
+select 
+	avg("Amount") as avg_amount, 
+	"ship-city", 
+	"Sales Channel"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-city", 
+	"Sales Channel"
+order by 
+	avg_amount desc;
+
+-- 37. Analyze the distribution of the total quantity of products sold by size for each sales channel.
+select 
+	sum("Qty") as total_qty, 
+	"Size", 
+	"Sales Channel"
+from 
+	public.amazon_sales_data
+where 
+	"Qty" is not null
+group by 
+	"Size", 
+	"Sales Channel";
+
 -- 38. Identify the top 3 ship-countries with the highest total sales amount for each promotion-id.
+with ship_orders as(
+	select 
+	sum("Amount") as total_sales,
+	"ship-country", 
+	"promotion-ids"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" >= 1
+group by 
+	"ship-country", 
+	"promotion-ids"
+),
+ranked_orders as (
+	select 
+	total_sales, 
+	"ship-country",
+	"promotion-ids", 
+	rank() over (partition by "promotion-ids" order by total_sales desc) as rank
+from 
+	ship_orders
+)
+select 
+	rank,
+	total_sales, 
+	"ship-country",
+	"promotion-ids"
+from 
+	ranked_orders
+where 
+	rank <= 3;
+
 -- 39. Calculate the average quantity ordered per order for each fulfilment type in each city.
+select 
+	avg("Qty") as avg_qty, 
+	"Fulfilment", 
+	"ship-city"
+from 
+	public.amazon_sales_data
+where 
+	"Qty" >= 1
+group by 
+	"Fulfilment", 
+	"ship-city"
+order by 
+	avg_qty desc;
+
 -- 40. Find the total sales amount for each courier status in each quarter of the year.
 -- 41. Calculate the average sales amount for each combination of size and ship-state.
 -- 42. Identify the top 5 ASINs with the highest average sales amount for each ship-service-level.
