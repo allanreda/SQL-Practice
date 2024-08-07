@@ -764,10 +764,35 @@ select
 from 
 	ranked_orders
 where 
-	rank <= 5
-
+	rank <= 5;
 
 -- 35. Calculate the total quantity of products sold for each ship-postal-code in each month.
+select 
+	EXTRACT(MONTH FROM normalized_date) AS month,
+	EXTRACT(YEAR FROM normalized_date) AS year,
+	sum("Qty") as avg_qty,
+	"ship-postal-code"
+FROM 
+    (SELECT 
+    "Qty",
+	"ship-postal-code",
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+where 
+	"Qty" is not null and
+	"ship-postal-code" is not null
+group by 
+	month, 
+	year,
+	"ship-postal-code"
+order by 
+	avg_qty desc;
+
+
 -- 36. Find the average sales amount for each combination of ship-city and sales channel.
 -- 37. Determine the trend of the total quantity of products sold for each product category over the past year.
 -- 38. Identify the top 3 ship-countries with the highest total sales amount for each promotion-id.
