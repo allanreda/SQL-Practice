@@ -716,8 +716,57 @@ group by
 	"promotion-ids"
 order by avg_amount desc;
 
--- 33. Determine the correlation between the fulfilment type and the courier status for each state.
+-- 33. Determine the correlation between the average order amount and the number of orders for each status type.
+with channel_corr as (
+	select
+	"Status",
+	avg("Amount") as avg_amount,
+	count(*) as order_count
+FROM 
+	public.amazon_sales_data
+group by 
+	"Status") 
+select
+	CORR(avg_amount, order_count) AS correlation
+from 
+	channel_corr
+order by 
+	correlation desc;
+
 -- 34. Identify the top 5 states with the highest average sales amount per order for each ship-service-level.
+with state_amounts as (
+	select 
+	"ship-state", 
+	avg("Amount") as avg_amount, 
+	"ship-service-level"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-state", 
+	"ship-service-level"
+),
+ranked_orders as (
+	select 
+	"ship-state", 
+	avg_amount, 
+	"ship-service-level", 
+	rank() over (partition by "ship-service-level" order by avg_amount desc) as rank
+from 
+	state_amounts
+)
+select 
+	"ship-state", 
+	avg_amount, 
+	"ship-service-level", 
+	rank
+from 
+	ranked_orders
+where 
+	rank <= 5
+
+
 -- 35. Calculate the total quantity of products sold for each ship-postal-code in each month.
 -- 36. Find the average sales amount for each combination of ship-city and sales channel.
 -- 37. Determine the trend of the total quantity of products sold for each product category over the past year.
