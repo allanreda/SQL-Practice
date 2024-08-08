@@ -868,9 +868,69 @@ group by
 order by 
 	avg_qty desc;
 
--- 40. Find the total sales amount for each courier status in each quarter of the year.
+-- 40. Find the total sales amount for each courier status for each SKU.
+select 
+	sum("Amount") as total_sales, 
+	"Courier Status", 
+	"SKU"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"Courier Status", 
+	"SKU"
+order by 
+	total_sales desc;
+
 -- 41. Calculate the average sales amount for each combination of size and ship-state.
+select 
+	avg("Amount") as avg_amount, 
+	"Size", 
+	"ship-state"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"Size", 
+	"ship-state"
+order by 
+	avg_amount desc;
+
 -- 42. Identify the top 5 ASINs with the highest average sales amount for each ship-service-level.
+with top_asins as(
+	select 
+	avg("Amount") as avg_amount,
+	"ASIN", 
+	"ship-service-level"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" >= 1
+group by 
+	"ASIN", 
+	"ship-service-level"
+),
+ranked_asins as (
+	select 
+	avg_amount,
+	"ASIN", 
+	"ship-service-level",
+	rank() over (partition by "ship-service-level" order by avg_amount desc) as rank
+from 
+	top_asins
+)
+select 
+	rank, 
+	avg_amount,
+	"ASIN", 
+	"ship-service-level"
+from 
+	ranked_asins
+where 
+	rank <= 5;
+
 -- 43. Determine the correlation between the ship-service-level and the total sales amount for each state.
 -- 44. Calculate the total quantity of products sold for each ship-country for each product category.
 -- 45. Find the average sales amount for each combination of ship-city and fulfilment type.
