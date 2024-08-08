@@ -931,8 +931,37 @@ from
 where 
 	rank <= 5;
 
--- 43. Determine the correlation between the ship-service-level and the total sales amount for each state.
+-- 43. Determine the correlation between the total quantity and the total sales amount for each state.
+with service_corr as (
+	select 
+	sum("Qty") as total_qty,
+	sum("Amount") as total_sales,
+	"ship-state"
+FROM 
+	public.amazon_sales_data
+group by 
+	"ship-state"
+)
+select 
+	corr(total_qty, total_sales) as correlation
+from 
+	service_corr
+order by 
+	correlation desc;
+
 -- 44. Calculate the total quantity of products sold for each ship-country for each product category.
+select 
+	sum("Qty") as total_qty, 
+	"ship-country", 
+	"Category"
+from 
+	public.amazon_sales_data
+where 
+	"Qty" >= 1
+group by 
+	"ship-country", 
+	"Category";
+
 -- 45. Find the average sales amount for each combination of ship-city and fulfilment type.
 -- 46. Identify the top 3 states with the highest number of orders for each combination of ship-service-level and courier status.
 -- 47. Calculate the total sales amount for each promotion-id for orders shipped using 'Expedited' service level.
