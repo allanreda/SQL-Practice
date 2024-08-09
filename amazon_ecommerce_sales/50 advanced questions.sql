@@ -1026,5 +1026,60 @@ order by
 	total_sales desc;
 
 -- 48. Determine the trend of the number of orders with promotion-ids applied for each ship-country.
+SELECT 
+    "ship-country", 
+    EXTRACT(YEAR FROM normalized_date) AS year, 
+    EXTRACT(MONTH FROM normalized_date) AS month, 
+    count(*) as promotion_orders
+FROM 
+    (SELECT 
+    "ship-country", 
+	"promotion-ids",   
+        CASE 
+            WHEN LENGTH("Date") = 8 THEN TO_DATE("Date", 'MM-DD-YY')
+            WHEN LENGTH("Date") = 10 THEN TO_DATE("Date", 'MM-DD-YYYY')
+            ELSE NULL
+        END AS normalized_date
+    FROM public.amazon_sales_data) AS subquery
+WHERE 
+    normalized_date IS NOT NULL and 
+	"promotion-ids" is not null and
+	"ship-country" is not null
+GROUP BY 
+    "ship-country", 
+    year, 
+    month
+ORDER BY 
+    "ship-country", 
+    year, 
+    month;
+
 -- 49. Find the average quantity ordered per order for each ship-state for each sales channel.
+select 
+	avg("Qty") as avg_qty, 
+	"ship-state", 
+	"Sales Channel"
+FROM 
+	public.amazon_sales_data
+where 
+	"Qty" >= 1
+group by 
+	"ship-state", 
+	"Sales Channel"
+order by 
+	avg_qty desc;
+
 -- 50. Calculate the total sales amount for each ship-service-level for orders with a status of 'Shipped - Delivered to Buyer'.
+select 
+	sum("Amount") as total_sales, 
+	"ship-service-level"
+FROM 
+	public.amazon_sales_data
+where 
+	"Amount" is not null and 
+	"Status" = 'Shipped - Delivered to Buyer'
+group by 
+	"ship-service-level"
+order by 
+	total_sales desc;
+
