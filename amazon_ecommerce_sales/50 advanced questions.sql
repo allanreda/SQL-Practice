@@ -963,8 +963,68 @@ group by
 	"Category";
 
 -- 45. Find the average sales amount for each combination of ship-city and fulfilment type.
+select 
+	avg("Amount") as avg_amount, 
+	"ship-city", 
+	"Fulfilment"
+from 
+	public.amazon_sales_data
+where 
+	"Amount" is not null
+group by 
+	"ship-city", 
+	"Fulfilment"
+order by "ship-city" asc;
+
 -- 46. Identify the top 3 states with the highest number of orders for each combination of ship-service-level and courier status.
+with state_orders as(
+	select
+	count(*) as order_count,
+	"ship-state",
+	"ship-service-level",
+	"Courier Status"
+from 
+	public.amazon_sales_data
+group by 
+	"ship-state",
+	"ship-service-level",
+	"Courier Status"
+),
+ranked_orders as (
+	select
+	order_count,
+	"ship-state",
+	"ship-service-level",
+	"Courier Status",
+	rank() over (partition by "ship-service-level", "Courier Status" order by order_count desc) as rank
+from 
+	state_orders
+)
+select 
+	order_count,
+	"ship-service-level",
+	"Courier Status",
+	"ship-state",
+	rank
+from 
+	ranked_orders
+where 
+	rank <= 3;
+
 -- 47. Calculate the total sales amount for each promotion-id for orders shipped using 'Expedited' service level.
+select 
+	sum("Amount") as total_sales, 
+	"promotion-ids"
+from 
+	public.amazon_sales_data
+where 
+	"ship-service-level" = 'Expedited' and
+	"promotion-ids" is not null
+group by 
+	"promotion-ids"
+order by 
+	total_sales desc;
+
 -- 48. Determine the trend of the number of orders with promotion-ids applied for each ship-country.
 -- 49. Find the average quantity ordered per order for each ship-state for each sales channel.
 -- 50. Calculate the total sales amount for each ship-service-level for orders with a status of 'Shipped - Delivered to Buyer'.
