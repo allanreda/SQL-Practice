@@ -45,4 +45,23 @@ where
 
 -- How can you produce a list of facilities, with each labelled as 'cheap' or 'expensive' depending on if their 
 -- monthly maintenance cost is more than $100? Return the name and monthly maintenance of the facilities in question.
+select 
+	name, 
+	case 
+	    when monthlymaintenance > 100 then 'Expensive' 
+	    when monthlymaintenance < 100 then 'Cheap'
+	end as cost
+from 
+	cd.facilities;
+
+-- How can you produce a list of members who joined after the start of September 2012? Return the memid, surname, firstname, and 
+-- joindate of the members in question.
+select memid, 
+	surname, 
+	firstname, 
+	joindate
+from 
+	cd.members
+where 
+	joindate > '2012-09-01';
 
