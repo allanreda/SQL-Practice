@@ -48,7 +48,7 @@ where
 select 
 	name, 
 	case 
-	    when monthlymaintenance > 100 then 'Expensive' 
+	    when monthlymaintenance > 100 then 'Expensive'
 	    when monthlymaintenance < 100 then 'Cheap'
 	end as cost
 from 
@@ -56,7 +56,8 @@ from
 
 -- How can you produce a list of members who joined after the start of September 2012? Return the memid, surname, firstname, and 
 -- joindate of the members in question.
-select memid, 
+select 
+	memid, 
 	surname, 
 	firstname, 
 	joindate
@@ -64,4 +65,66 @@ from
 	cd.members
 where 
 	joindate > '2012-09-01';
+
+-- How can you produce an ordered list of the first 10 surnames in the members table? The list must not contain duplicates.
+select 
+	distinct(surname)
+from 
+	cd.members
+order by 
+	surname
+limit 10;
+
+-- You, for some reason, want a combined list of all surnames and all facility names. Yes, this is a contrived example :-). 
+-- Produce that list!
+select 
+	surname
+from 
+	cd.members
+union
+select 
+	name
+from 
+	cd.facilities;
+
+-- You'd like to get the signup date of your last member. How can you retrieve this information?
+select 
+	joindate
+from 
+	cd.members
+order by 
+	joindate desc
+limit 1;
+
+-- or:
+
+select 
+	max(joindate)
+from 
+	cd.members;
+
+-- You'd like to get the first and last name of the last member(s) who signed up - not just the date. How can you do that?
+select 
+	firstname,
+	surname,
+	joindate
+from 
+	cd.members
+where 
+	joindate = (
+	select max(joindate)
+	from cd.members
+);
+
+-- or:
+
+select 
+	firstname,
+	surname,
+	joindate
+from 
+	cd.members
+order by 
+	joindate desc
+limit 1;
 
