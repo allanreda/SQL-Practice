@@ -40,5 +40,44 @@ inner join
 on 
 	mem.memid = rec.recommendedby
 order by 
-	mem.firstname, 
-	mem.surname
+	mem.surname, 
+	mem.firstname
+
+-- How can you output a list of all members, including the individual who recommended them (if any)? 
+-- Ensure that results are ordered by (surname, firstname).
+select 
+	mem.firstname as mem_firstname, 
+	mem.surname as mem_surname, 
+	rec.firstname as rec_firstname, 
+	rec.surname as rec_surname
+from 
+	cd.members as mem
+left outer join 
+	cd.members as rec
+on 
+	rec.memid = mem.recommendedby
+order by 
+	mem_surname, 
+	mem_firstname;
+
+-- How can you produce a list of all members who have used a tennis court? Include in your output the name of the court, 
+-- and the name of the member formatted as a single column. Ensure no duplicate data, and order by the member name 
+-- followed by the facility name.
+select distinct
+	concat(mem.firstname, ' ', mem.surname) as member, 
+	fac.name as facility
+from 
+	cd.members as mem
+inner join 
+	cd.bookings as bks
+on 
+	mem.memid = bks.memid
+inner join 
+	cd.facilities as fac
+on 
+	bks.facid = fac.facid
+where 
+	fac.name like '%Tennis Court%'
+order by 
+	member, 
+	facility;
