@@ -113,4 +113,20 @@ where
 order by 
 	cost desc;
 
+-- How can you output a list of all members, including the individual who recommended them (if any), without using any joins? 
+-- Ensure that there are no duplicates in the list, and that each firstname + surname pairing is formatted as a column and ordered.
+
+select distinct 
+	concat(mem.firstname, ' ', mem.surname) as member, 
+	(select 
+	       concat(rec.firstname, ' ', rec.surname) as recommender
+	from 
+	    cd.members as rec
+	where 
+	    rec.memid = mem.recommendedby
+	)
+from 
+	cd.members as mem
+order by 
+	member;
 
