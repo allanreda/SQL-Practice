@@ -130,3 +130,34 @@ from
 order by 
 	member;
 
+-- The Produce a list of costly bookings exercise contained some messy logic: we had to calculate the booking cost in both 
+-- the WHERE clause and the CASE statement. Try to simplify this calculation using subqueries. 
+select 
+	member, 
+	facility, 
+	cost 
+from (select 
+	concat(mem.firstname, ' ', mem.surname) as member, 
+	fac.name as facility,
+	case when 
+	    mem.memid = 0 then bks.slots * fac.guestcost else
+	    bks.slots * fac.membercost
+	end as cost
+from 
+	cd.members as mem
+inner join 
+	cd.bookings as bks
+on 
+	mem.memid = bks.memid
+inner join 
+	cd.facilities as fac
+on 
+	bks.facid = fac.facid
+where 
+	bks.starttime > '2012-09-14' and 
+	bks.starttime < '2012-09-15') as bookings
+where 
+	cost > 30
+order by 
+	cost desc;
+
