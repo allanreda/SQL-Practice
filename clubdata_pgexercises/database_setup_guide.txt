@@ -1,0 +1,5 @@
+-Åben CMD
+-cd "C:\Users\allan\Desktop\Personlige projekter\SQL-practice\clubdata_pgexercises"
+-"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -f clubdata.sql -d postgres -x -q
+-Tast kode
+-Refresh pgAdmin
