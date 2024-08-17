@@ -155,3 +155,55 @@ where
 	revenue < 1000
 order by 
 	revenue asc;
+
+-- Output the facility id that has the highest number of slots booked. For bonus points, try a version without a LIMIT clause. 
+-- This version will probably look messy!
+select 
+	facid, 
+	sum(slots) as total_slots
+from 
+	cd.bookings
+group by 
+	facid
+order by 
+	total_slots desc
+limit 1;
+
+-- or:
+
+with sum as 
+	(select 
+	facid, 
+	sum(slots) as totalslots
+from 
+	cd.bookings
+group by 
+	facid
+)
+select 
+	facid, 
+	totalslots 
+from 
+	sum
+where 
+	totalslots = (select max(totalslots) from sum);
+
+-- Produce a list of the total number of slots booked per facility per month in the year of 2012. In this version, 
+-- include output rows containing totals for all months per facility, and a total for all months for all facilities. 
+-- The output table should consist of facility id, month and slots, sorted by the id and month. 
+-- When calculating the aggregated values for all months and all facids, return null values in the month and facid columns.
+select 
+	facid, 
+	extract(month from starttime) as month, 
+	sum(slots) as slots
+from 
+	cd.bookings
+where 
+	starttime >= '2012-01-01'
+	and starttime < '2013-01-01'
+group by 
+	facid, 
+	month
+order by 
+	facid, 
+	month;
