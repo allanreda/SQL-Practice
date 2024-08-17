@@ -91,3 +91,67 @@ having
 	sum(slots) > 1000
 order by 
 	facid;
+
+-- Produce a list of facilities along with their total revenue. The output table should consist of facility name 
+-- and revenue, sorted by revenue. Remember that there's a different cost for guests and members!
+select 
+	fac.name, 
+	sum(slots * case when
+	    bks.memid = 0 then fac.guestcost
+	    else fac.membercost end) as revenue
+from 
+	cd.facilities as fac
+inner join
+	cd.bookings as bks
+on 
+	bks.facid = fac.facid
+group by 
+	fac.name
+order by 
+	revenue asc;
+
+-- Produce a list of facilities with a total revenue less than 1000. Produce an output table consisting of 
+-- facility name and revenue, sorted by revenue. Remember that there's a different cost for guests and members!
+
+select 
+	fac.name, 
+	sum(slots * case when
+	    bks.memid = 0 then fac.guestcost
+	    else fac.membercost end) as revenue
+from 
+	cd.facilities as fac
+inner join
+	cd.bookings as bks
+on 
+	bks.facid = fac.facid
+group by 
+	fac.name
+having sum(slots * case when
+	    bks.memid = 0 then fac.guestcost
+	    else fac.membercost end) < 1000
+order by 
+	revenue;
+
+-- or:
+
+select 
+	name, 
+	revenue 
+	from (
+	select 
+	fac.name, 
+	sum(slots * case when
+	    bks.memid = 0 then fac.guestcost
+	    else fac.membercost end) as revenue
+	from 
+	    cd.facilities as fac
+    inner join
+	    cd.bookings as bks
+    on 
+	    bks.facid = fac.facid
+	group by fac.name
+) as subquery
+where 
+	revenue < 1000
+order by 
+	revenue asc;
