@@ -50,4 +50,44 @@ where
 	starttime < '2012-10-01'
 group by 
 	facid
-order by total_slots asc
+order by 
+	total_slots asc;
+
+-- Produce a list of the total number of slots booked per facility per month in the year of 2012. 
+-- Produce an output table consisting of facility id and slots, sorted by the id and month.
+select 
+	facid, 
+	extract(month from starttime) as month,
+	sum(slots) as total_slots 
+from 
+	cd.bookings
+where 
+	extract(year from starttime) = 2012
+group by 
+	facid, 
+	month
+order by 
+	facid, 
+	month;
+
+-- Find the total number of members (including guests) who have made at least one booking.
+select 
+	count(distinct(memid))
+from 
+	cd.bookings
+where 
+	slots >= 1
+
+-- Produce a list of facilities with more than 1000 slots booked. 
+-- Produce an output table consisting of facility id and slots, sorted by facility id.
+select 
+	facid, 
+	sum(slots) as total_slots
+from 
+	cd.bookings
+group by 
+	facid
+having 
+	sum(slots) > 1000
+order by 
+	facid;
