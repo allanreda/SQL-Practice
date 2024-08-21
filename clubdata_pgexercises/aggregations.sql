@@ -201,9 +201,52 @@ from
 where 
 	starttime >= '2012-01-01'
 	and starttime < '2013-01-01'
-group by 
+group by rollup(
 	facid, 
-	month
+	month)
 order by 
 	facid, 
 	month;
+
+-- Produce a list of the total number of hours booked per facility, remembering that a slot lasts half an hour. 
+-- The output table should consist of the facility id, name, and hours booked, sorted by facility id. 
+-- Try formatting the hours to two decimal places.
+select 
+	fac.facid, 
+	fac.name, 
+	sum(bks.slots / 2.0) as total_hours
+from 
+	cd.bookings as bks
+inner join 
+	cd.facilities as fac
+on 
+	fac.facid = bks.facid
+group by 
+	fac.facid, 
+	fac.name
+order by 
+	fac.facid;
+
+-- Produce a list of each member name, id, and their first booking after September 1st 2012. Order by member ID.
+select 
+	mem.surname, 
+	mem.firstname, 
+	mem.memid, 
+	min(bks.starttime) as starttime
+from 
+	cd.bookings as bks
+inner join 
+	cd.members as mem
+on 
+	bks.memid = mem.memid
+where 
+	bks.starttime > '2012-09-01'
+group by
+	mem.surname, 
+	mem.firstname, 
+	mem.memid
+order by 
+	mem.memid;
+
+-- Produce a list of member names, with each row containing the total member count. 
+-- Order by join date, and include guest members.
