@@ -250,3 +250,37 @@ order by
 
 -- Produce a list of member names, with each row containing the total member count. 
 -- Order by join date, and include guest members.
+select 
+	count(*) over(), 
+	firstname, 
+	surname
+from 
+	cd.members
+order by 
+	joindate;   
+
+-- Produce a monotonically increasing numbered list of members (including guests), ordered by their date of joining. 
+-- Remember that member IDs are not guaranteed to be sequential.
+select 
+	row_number() over(order by joindate), 
+	firstname, 
+	surname
+from 
+	cd.members
+order by 
+	joindate;
+
+-- Output the facility id that has the highest number of slots booked. Ensure that in the event of a tie, 
+-- all tieing results get output.
+select 
+	facid, 
+	total 
+from (
+	select facid, 
+	sum(slots) as total, 
+	rank() over (order by sum(slots) desc) rank
+        	from cd.bookings
+		group by facid
+	) as ranked
+where 
+	rank = 1;     
